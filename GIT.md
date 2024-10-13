@@ -46,7 +46,7 @@ git checkout main
 git checkout -b my-cool-feature
 ```
 
-## Commits
+## Committing & Pushing
 
 To save your code changes, you can create commits. Let's create a commit
 
@@ -150,3 +150,11 @@ Should you want to add anymore changes to the remote, add more commits and then
 ```bash
 git push
 ```
+
+## To Do
+
+1. How to undo of a commit
+2. How to reverse unwanted changes back to the previous state
+3. How to run git add --patch
+4. How to issue Pull Request
+5. How to cleanup branches
