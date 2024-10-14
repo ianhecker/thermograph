@@ -147,6 +147,8 @@ Now, check status - it should be *Changes to be commited*
 git status
 ```
 
+![git-status-hello-world-commit](/images/2024-10-13_18-30-01.png)
+
 Let's commit the changes with a message
 
 ```bash
@@ -154,8 +156,6 @@ git commit -m "Updated hello-world.txt"
 ```
 
 The file is now committed
-
-![git-status-hello-world-commit](/images/2024-10-13_18-30-01.png)
 
 Yay! let's push your new branch to the remote repo. You only have to do this
 with a new branch that has not yet been *pushed*
