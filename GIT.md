@@ -70,6 +70,8 @@ git status
 
 The file `hello-world.txt` should be listed as *Untracked*
 
+![git-status-hello-world-file](/images/2024-10-13_18-26-46.png)
+
 Now, let's add the file to git so it can track it
 
 ```bash
