@@ -59,7 +59,7 @@ To save your code changes, you can create commits. Let's create a commit
 
 ```bash
 git checkout my-cool-feature
-touch learning-git
+touch hello-world.txt
 ```
 
 Let's check to see the status
@@ -68,12 +68,12 @@ Let's check to see the status
 git status
 ```
 
-The file `learning-git` should be listed as *Untracked*
+The file `hello-world.txt` should be listed as *Untracked*
 
 Now, let's add the file to git so it can track it
 
 ```bash
-git add learning-git
+git add hello-world.txt
 ```
 
 Let's check to see the status
@@ -87,7 +87,7 @@ The file should now listed as *Changes to be committed*
 Let's add a commit, with a message
 
 ```bash
-git commit -m "Added learning-git file"
+git commit -m "Added hello-world.txt file"
 ```
 
 Let's check our commits
@@ -101,13 +101,13 @@ You can see the list of commits now, and should see yours
 Let's edit the file and add a sentence
 
 ```bash
-echo "Hello World!" >> learning-git
+echo "Hello World!" >> hello-world.txt
 ```
 
 Check the file for the contents, *"Hello World!"*
 
 ```bash
-micro learning-git
+micro hello-world.txt
 ```
 
 Now, check status
@@ -129,7 +129,7 @@ You should see the before, and after
 Let's add changes
 
 ```bash
-git add learning-git
+git add hello-world.txt
 ```
 
 Now, check status - it should be *Changes to be commited*
@@ -141,7 +141,7 @@ git status
 Let's commit the changes with a message
 
 ```bash
-git commit -m "Updated learning-git"
+git commit -m "Updated hello-world.txt"
 ```
 
 Yay! let's push your new branch to the remote repo. You only have to do this
