@@ -1,5 +1,7 @@
 # Git
 
+This serves as a tutorial for git on how do basic version control with code
+
 ## Install
 
 Install Git https://git-scm.com/
