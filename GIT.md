@@ -16,6 +16,11 @@ To download code into a folder on your local machine:
 git clone https://github.com/ianhecker/thermograph.git thermograph
 ```
 
+## Repo Permissions for Pushing
+
+You will need to reach out and be added to the repo in order to *push*, but
+you'll be able to *pull* and do most of the tutorial without repo permissions
+
 ## Code on Main
 
 Main is the name of the root branch on Git. This branch should be treated
