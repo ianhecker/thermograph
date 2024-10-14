@@ -83,8 +83,9 @@ Let's check to see the status
 ```bash
 git status
 ```
-
 The file should now listed as *Changes to be committed*
+
+![git-add-hello-world](/images/2024-10-13_18-27-14.png)
 
 Let's add a commit, with a message
 
@@ -99,6 +100,8 @@ git log
 ```
 
 You can see the list of commits now, and should see yours
+
+![git-log-hello-world](images/2024-10-13_18-28-16.png)
 
 Let's edit the file and add a sentence
 
@@ -120,13 +123,17 @@ git status
 
 The file should be listed in *Changes not staged for commmit*
 
+![git-status-hello-world-edit](images/2024-10-13_18-29-24.png)
+
 Let's run a diff
 
 ```bash
 git diff
 ```
 
-You should see the before, and after
+Running *diff* will show a file before an edit, and the changes now
+
+![git-diff-hello-world](/images/2024-10-13_18-29-42.png)
 
 Let's add changes
 
@@ -145,6 +152,10 @@ Let's commit the changes with a message
 ```bash
 git commit -m "Updated hello-world.txt"
 ```
+
+The file is now committed
+
+![git-status-hello-world-commit](/images/2024-10-13_18-30-01.png)
 
 Yay! let's push your new branch to the remote repo. You only have to do this
 with a new branch that has not yet been *pushed*
