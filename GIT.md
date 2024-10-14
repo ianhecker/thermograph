@@ -164,6 +164,8 @@ with a new branch that has not yet been *pushed*
 git push -u origin my-cool-feature
 ```
 
+![git-status-hello-world-commit](/images/2024-10-13_19-02-00.png)
+
 Should you want to add anymore changes to the remote, add more commits and then
 *push* your branch
 
