@@ -3,8 +3,9 @@
 #define MILLISECOND 1
 #define SECOND 1000 * MILLISECOND
 #define MINUTE 60 * SECOND
-
 #define LOG_INTERVAL 2 * SECOND
+
+#define NOTIFY_LED 13
 
 RTC_DS1307 rtc;
 
@@ -13,14 +14,40 @@ void error(char *err) {
   Serial.println(err);
 }
 
-void log(DateTime now, char *msg) {
-  Serial.print(now.unixtime());
-  Serial.print(" ");
-  Serial.println(msg);
+void blink(int pin, int duration) {
+  digitalWrite(pin, HIGH);
+  delay(duration);
+  digitalWrite(pin, LOW);
+}
+
+void notify() {
+  blink(NOTIFY_LED, 200 * MILLISECOND);
+  delay(200 * MILLISECOND);
+  blink(NOTIFY_LED, 200 * MILLISECOND);
+  return;
+}
+
+void log(DateTime now, String msg) {
+  Serial.print("unix='" + String(now.unixtime()) + "',");
+  Serial.print("context='" + msg + "'");
+  Serial.println();
+  return;
+}
+
+float getTemperature() {
+  float temperature = 72.23;
+  log(rtc.now(), "took temperature:" + String(temperature) + " degrees");
+
+  return temperature;
+}
+
+void writeTemperature(float temperature) {
+  log(rtc.now(), "wrote temperature:" + String(temperature) + " to memory");
+  return;
 }
 
 void setup(void) {
-  pinMode(13, OUTPUT);
+  pinMode(NOTIFY_LED, OUTPUT);
 
   if (!rtc.begin()) {
     Serial.println("RTC failed");
@@ -34,6 +61,10 @@ void setup(void) {
 void loop(void) {
   Serial.begin(9600);
 
-  log(rtc.now(), "hello");
-  delay(LOG_INTERVAL);
+  float temperature = getTemperature();
+
+  writeTemperature(temperature);
+  notify();
+
+  delay(1 * SECOND);
 }
