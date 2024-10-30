@@ -1,5 +1,11 @@
 #include "RTClib.h"
 
+#define MILLISECOND 1
+#define SECOND 1000 * MILLISECOND
+#define MINUTE 60 * SECOND
+
+#define LOG_INTERVAL 2 * SECOND
+
 RTC_DS1307 rtc;
 
 void error(char *err) {
@@ -29,5 +35,5 @@ void loop(void) {
   Serial.begin(9600);
 
   log(rtc.now(), "hello");
-  delay(1000);
+  delay(LOG_INTERVAL);
 }
