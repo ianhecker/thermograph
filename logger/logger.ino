@@ -1,11 +1,11 @@
 #include "RTClib.h"
 
+#define NOTIFY_LED 13
+
 #define MILLISECOND 1
 #define SECOND 1000 * MILLISECOND
 #define MINUTE 60 * SECOND
 #define LOG_INTERVAL 2 * SECOND
-
-#define NOTIFY_LED 13
 
 RTC_DS1307 rtc;
 
@@ -14,24 +14,21 @@ void error(char *err) {
   Serial.println(err);
 }
 
-void blink(int pin, int duration) {
+void blink(int pin, int delay_ms) {
   digitalWrite(pin, HIGH);
-  delay(duration);
+  delay(delay_ms);
   digitalWrite(pin, LOW);
 }
 
-void notify() {
-  blink(NOTIFY_LED, 200 * MILLISECOND);
-  delay(200 * MILLISECOND);
-  blink(NOTIFY_LED, 200 * MILLISECOND);
-  return;
+void double_blink(int pin, int blink_ms, int delay_ms) {
+  blink(pin, blink_ms);
+  delay(delay_ms);
+  blink(pin, blink_ms);
 }
 
-void log(DateTime now, String msg) {
-  Serial.print("unix='" + String(now.unixtime()) + "',");
-  Serial.print("context='" + msg + "'");
-  Serial.println();
-  return;
+void notify_write() {
+  double_blink(NOTIFY_LED, 200 * MILLISECOND, 200 * MILLISECOND);
+}
 }
 
 float getTemperature() {
