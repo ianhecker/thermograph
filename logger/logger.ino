@@ -1,7 +1,9 @@
 #include "RTClib.h"
 
+// PINS ------------------------------------------------------------------------
 #define NOTIFY_LED 13
 
+// TIME ------------------------------------------------------------------------
 #define MILLISECOND 1
 #define SECOND 1000 * MILLISECOND
 #define MINUTE 60 * SECOND
@@ -9,17 +11,20 @@
 
 RTC_DS1307 rtc;
 
+// DEBUG LOGS ------------------------------------------------------------------
 byte DEBUG_LOG_OUTPUT = 0b00;
 #define DEBUG_LOG_OFF = 0b00
 #define DEBUG_LOG_SERIAL 0b01
 #define DEBUG_LOG_FILE 0b10
 #define DEBUG_LOG_SERIAL_AND_FILE 0b11
 
+// ERROR -----------------------------------------------------------------------
 void error(char *err) {
   Serial.print("error: ");
   Serial.println(err);
 }
 
+// LED NOTIFICATIONS -----------------------------------------------------------
 void blink(int pin, int delay_ms) {
   digitalWrite(pin, HIGH);
   delay(delay_ms);
@@ -36,6 +41,15 @@ void notify_write() {
   double_blink(NOTIFY_LED, 200 * MILLISECOND, 200 * MILLISECOND);
 }
 
+// LOGGING ---------------------------------------------------------------------
+void logSerial(String log) { Serial.println(log); }
+
+void logFile(String log) {
+  // LOG TO SD STUB
+  Serial.println(log);
+}
+
+// DEBUG LOGGING ---------------------------------------------------------------
 String formatDebug(DateTime now, String ctx, float temp) {
   char buffer[100];
   char tempBuffer[10];
@@ -45,13 +59,6 @@ String formatDebug(DateTime now, String ctx, float temp) {
   sprintf(buffer, fmt, now.unixtime(), ctx.c_str(), tempBuffer);
 
   return String(buffer);
-}
-
-void logSerial(String log) { Serial.println(log); }
-
-void logFile(String log) {
-  // LOG TO SD STUB
-  Serial.println(log);
 }
 
 void debug(String msg) {
@@ -64,6 +71,7 @@ void debug(String msg) {
   }
 }
 
+// TEMPERATURE -----------------------------------------------------------------
 float getTemperature() {
   // TEMPERATURE SENSOR STUB
 
@@ -76,6 +84,7 @@ void writeTemperature(float temperature) {
   // SD CARD WRITE STUB
 }
 
+// SETUP -----------------------------------------------------------------------
 void setup(void) {
   pinMode(NOTIFY_LED, OUTPUT);
 
@@ -90,6 +99,7 @@ void setup(void) {
   DEBUG_LOG_OUTPUT = DEBUG_LOG_SERIAL;
 }
 
+// LOOP ------------------------------------------------------------------------
 void loop(void) {
   Serial.begin(9600);
   String dbg;
