@@ -50,26 +50,38 @@ void logFile(String log) {
 }
 
 // DEBUG LOGGING ---------------------------------------------------------------
-String formatDebug(DateTime now, String ctx, float temp) {
-  char buffer[100];
-  char tempBuffer[10];
-  dtostrf(temp, 6, 2, tempBuffer);
+struct Debug {
 
-  char fmt[50] = "unix:'%lu' | context:'%s' | temperature:'%s'";
-  sprintf(buffer, fmt, now.unixtime(), ctx.c_str(), tempBuffer);
+  void logCtxAndTemperature(DateTime now, String ctx, float temp) {
+    char buffer[100];
+    char tempBuffer[10];
+    dtostrf(temp, 6, 2, tempBuffer);
 
-  return String(buffer);
-}
+    char fmt[50] = "unix:'%lu' | context:'%s' | temperature:'%s'";
+    sprintf(buffer, fmt, now.unixtime(), ctx.c_str(), tempBuffer);
 
-void debug(String msg) {
-
-  if (DEBUG_LOG_OUTPUT & DEBUG_LOG_SERIAL) {
-    logSerial(msg);
+    log(String(buffer));
   }
-  if (DEBUG_LOG_OUTPUT & DEBUG_LOG_FILE) {
-    logFile(msg);
+
+  void logCtx(DateTime now, String ctx) {
+    char buffer[100];
+
+    char fmt[50] = "unix:'%lu' | context:'%s'";
+    sprintf(buffer, fmt, now.unixtime(), ctx.c_str());
+
+    log(String(buffer));
   }
-}
+
+  void log(String msg) {
+
+    if (DEBUG_LOG_OUTPUT & DEBUG_LOG_SERIAL) {
+      logSerial(msg);
+    }
+    if (DEBUG_LOG_OUTPUT & DEBUG_LOG_FILE) {
+      logFile(msg);
+    }
+  }
+};
 
 // TEMPERATURE -----------------------------------------------------------------
 float getTemperature() {
@@ -102,17 +114,15 @@ void setup(void) {
 // LOOP ------------------------------------------------------------------------
 void loop(void) {
   Serial.begin(9600);
-  String dbg;
+  Debug debug;
 
   float temperature = getTemperature();
 
-  dbg = formatDebug(rtc.now(), "took temp", temperature);
-  debug(dbg);
+  debug.logCtxAndTemperature(rtc.now(), "took temp", temperature);
 
   writeTemperature(temperature);
 
-  dbg = formatDebug(rtc.now(), "wrote temp to SD card", temperature);
-  debug(dbg);
+  debug.logCtxAndTemperature(rtc.now(), "wrote temp to SD card", temperature);
 
   // notify_write();
 
