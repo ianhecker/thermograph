@@ -25,26 +25,26 @@ void error(char *err) {
 }
 
 // LED NOTIFICATIONS -----------------------------------------------------------
-void blink(int pin, int delay_ms) {
+void Blink(int pin, int delay_ms) {
   digitalWrite(pin, HIGH);
   delay(delay_ms);
   digitalWrite(pin, LOW);
 }
 
-void double_blink(int pin, int blink_ms, int delay_ms) {
-  blink(pin, blink_ms);
+void DoubleBlink(int pin, int blink_ms, int delay_ms) {
+  Blink(pin, blink_ms);
   delay(delay_ms);
-  blink(pin, blink_ms);
+  Blink(pin, blink_ms);
 }
 
-void notify_write() {
-  double_blink(NOTIFY_LED, 200 * MILLISECOND, 200 * MILLISECOND);
+void NotifyWrite() {
+  DoubleBlink(NOTIFY_LED, 200 * MILLISECOND, 200 * MILLISECOND);
 }
 
 // LOGGING ---------------------------------------------------------------------
-void logSerial(String log) { Serial.println(log); }
+void LogSerial(String log) { Serial.println(log); }
 
-void logFile(String log) {
+void LogFile(String log) {
   // LOG TO SD STUB
   Serial.println(log);
 }
@@ -52,7 +52,7 @@ void logFile(String log) {
 // DEBUG LOGGING ---------------------------------------------------------------
 struct Debug {
 
-  void logCtxAndTemperature(DateTime now, String ctx, float temp) {
+  void LogCtxAndTemperature(DateTime now, String ctx, float temp) {
     char buffer[100];
     char tempBuffer[10];
     dtostrf(temp, 6, 2, tempBuffer);
@@ -63,7 +63,7 @@ struct Debug {
     log(String(buffer));
   }
 
-  void logCtx(DateTime now, String ctx) {
+  void LogCtx(DateTime now, String ctx) {
     char buffer[100];
 
     char fmt[50] = "unix:'%lu' | context:'%s'";
@@ -75,16 +75,16 @@ struct Debug {
   void log(String msg) {
 
     if (DEBUG_LOG_OUTPUT & DEBUG_LOG_SERIAL) {
-      logSerial(msg);
+      LogSerial(msg);
     }
     if (DEBUG_LOG_OUTPUT & DEBUG_LOG_FILE) {
-      logFile(msg);
+      LogFile(msg);
     }
   }
 };
 
 // TEMPERATURE -----------------------------------------------------------------
-float getTemperature() {
+float GetTemperature() {
   // TEMPERATURE SENSOR STUB
 
   float temperature = 101.234;
@@ -92,7 +92,7 @@ float getTemperature() {
   return temperature;
 }
 
-void writeTemperature(float temperature) {
+void WriteTemperature(float temperature) {
   // SD CARD WRITE STUB
 }
 
@@ -116,15 +116,15 @@ void loop(void) {
   Serial.begin(9600);
   Debug debug;
 
-  float temperature = getTemperature();
+  float temperature = GetTemperature();
 
-  debug.logCtxAndTemperature(rtc.now(), "took temp", temperature);
+  debug.LogCtxAndTemperature(rtc.now(), "took temp", temperature);
 
-  writeTemperature(temperature);
+  WriteTemperature(temperature);
 
-  debug.logCtxAndTemperature(rtc.now(), "wrote temp to SD card", temperature);
+  debug.LogCtxAndTemperature(rtc.now(), "wrote temp to SD card", temperature);
 
-  // notify_write();
+  // NotifyWrite();
 
   delay(5 * SECOND);
 }
