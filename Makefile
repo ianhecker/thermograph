@@ -7,10 +7,7 @@ PORT=$(DEFAULT_PORT)
 
 all: upload
 
-clean:
-	rm -r data
-	rm -r downloads
-	rm -r libraries
+clean: uninstall
 
 very-clean: clean
 	rm ~/.local/bin/arduino-cli
@@ -19,14 +16,21 @@ init:
 	curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | BINDIR=~/.local/bin sh
 	arduino-cli config init
 
-install:
+lib:
 	arduino-cli lib install RTClib@2.1.4
 	arduino-cli lib install SD@1.3.0
 
 core:
 	arduino-cli core install arduino:avr
 
-compile: install core
+install: core lib
+
+uninstall:
+	arduino-cli core uninstall arduino:avr
+	arduino-cli lib uninstall RTClib
+	arduino-cli lib uninstall SD
+
+compile: install
 	arduino-cli compile --fqbn $(FQBN) .
 
 upload: compile
