@@ -1,4 +1,3 @@
-CONFIG_FILE = ./arduino-cli.yaml
 DEFAULT_PORT = /dev/ttyUSB0
 FULLY_QUALIFIED_BOARD_NAME = arduino:avr:uno
 FQBN = $(FULLY_QUALIFIED_BOARD_NAME)
@@ -18,13 +17,17 @@ very-clean: clean
 
 init:
 	curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | BINDIR=~/.local/bin sh
+	arduino-cli config init
 
 install:
-	arduino-cli --config-file $(CONFIG_FILE) lib install RTClib@2.1.4
-	arduino-cli --config-file $(CONFIG_FILE) lib install SD@1.3.0
+	arduino-cli lib install RTClib@2.1.4
+	arduino-cli lib install SD@1.3.0
 
-compile: install
-	arduino-cli --config-file $(CONFIG_FILE) compile --fqbn $(FQBN)
+core:
+	arduino-cli core install arduino:avr
+
+compile: install core
+	arduino-cli compile --fqbn $(FQBN) .
 
 upload: compile
-	arduino-cli --config-file $(CONFIG_FILE) upload --port $(PORT) --fqbn $(FQBN)
+	arduino-cli upload --port $(PORT) --fqbn $(FQBN)
