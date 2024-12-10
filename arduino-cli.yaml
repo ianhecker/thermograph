@@ -1,0 +1,6 @@
+directories:
+  data: "./data"
+  downloads: "./downloads"
+  user: "./"
+board_manager:
+    additional_urls: []
