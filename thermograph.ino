@@ -1,4 +1,5 @@
 #include "RTClib.h"
+#include <SD.h>
 
 // PINS ------------------------------------------------------------------------
 #define NOTIFY_LED 13
@@ -21,10 +22,16 @@ byte DEBUG_LOG_OUTPUT = 0b00;
 #define DEBUG_LOG_FILE 0b10
 #define DEBUG_LOG_SERIAL_AND_FILE 0b11
 
+// SD --------------------------------------------------------------------------
+File logfile;
+
 // ERROR -----------------------------------------------------------------------
 void error(char *err) {
   Serial.print("error: ");
   Serial.println(err);
+  Serial.flush();
+  while (1)
+    delay(10);
 }
 
 // LED NOTIFICATIONS -----------------------------------------------------------
@@ -162,33 +169,22 @@ void setupRTC() {
   Serial.println(offset);
 }
 
-String toHumanReadableDate(DateTime now) {
-  char buffer[100];
-  char fmt[50] = "%d/%02d/%02d %s %02d:%02d:%02d";
-
-  sprintf(buffer, fmt, now.year(), now.month(), now.day(),
-          DAYS_OF_THE_WEEK[now.dayOfTheWeek()], now.hour(), now.minute(),
-          now.second());
-
-  return String(buffer);
-}
-
 // SD --------------------------------------------------------------------------
-// void setupSD() {
-//   if (!SD.begin(10)) {
-//     error("Card failed, or not present");
-//   }
-//   Serial.println("SD initialized");
+void setupSD() {
+  if (!SD.begin(10)) {
+    error("Card failed, or not present");
+  }
+  Serial.println("SD initialized");
 
-//   char filename[] = "LOGS.CSV";
-//   if (!SD.exists(filename)) {
-//     logfile = SD.open(filename, FILE_WRITE);
-//   }
+  char filename[] = "LOGS.CSV";
+  if (!SD.exists(filename)) {
+    logfile = SD.open(filename, FILE_WRITE);
+  }
 
-//   if (!logfile) {
-//     error("couldnt create file");
-//   }
-// }
+  if (!logfile) {
+    error("couldnt create file");
+  }
+}
 
 // SETUP -----------------------------------------------------------------------
 void setup(void) {
