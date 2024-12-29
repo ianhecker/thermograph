@@ -199,7 +199,7 @@ void setup(void) {
 
 // LOOP ------------------------------------------------------------------------
 void loop(void) {
-  Serial.begin(57600);
+  Serial.begin(9600;
   Debug debug;
 
   float temperature = GetTemperature();
