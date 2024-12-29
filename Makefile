@@ -5,7 +5,7 @@ PORT=$(DEFAULT_PORT)
 
 .PHONY: all clean very-clean install compile upload
 
-all: upload
+all: monitor
 
 clean: uninstall
 
@@ -35,3 +35,6 @@ compile: install
 
 upload: compile
 	arduino-cli upload --port $(PORT) --fqbn $(FQBN)
+
+monitor: upload
+	arduino-cli monitor -p $(PORT)
