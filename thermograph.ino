@@ -8,7 +8,8 @@
 
 #define DEBUG 1
 
-const int CHIP_SELECT_PIN = 10;
+#define CHIP_SELECT_PIN 10
+#define TEMPERATURE_PIN 0
 
 RTC_PCF8523 rtc;
 
@@ -47,6 +48,16 @@ String formatTemperature(float temperature) {
   return String(buffer);
 }
 
+float getTemperature() {
+  int reading = analogRead(TEMPERATURE_PIN);
+
+  float voltage = (reading * 5.0) / 1105.0;
+  float celsius = (voltage - 0.5) * 100.0;
+  float fahrenheit = (celsius * 9.0 / 5.0) + 32.0;
+
+  return fahrenheit;
+}
+
 void setup() {
   Serial.begin(9600);
 
@@ -73,7 +84,7 @@ void loop() {
   File myFile = SD.open("LOGS.CSV", FILE_WRITE);
 
   if (myFile) {
-    float temperature = 12.3;
+    float temperature = getTemperature();
 
     DateTime now = rtc.now();
 
@@ -85,6 +96,7 @@ void loop() {
         "'" + unixTime + "','" + humanTime + "','" + tempString + "F'";
 
     myFile.println(rowInCSV);
+    mtFile.flush();
     myFile.close();
 
     Serial.println(rowInCSV);
@@ -92,5 +104,5 @@ void loop() {
     Serial.println("error opening file: LOGS.CSV");
   }
 
-  delay(1 * SECOND);
+  delay(5 * MINUTE);
 }
