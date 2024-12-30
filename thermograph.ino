@@ -1,85 +1,96 @@
 #include <RTClib.h>
+#include <SD.h>
+#include <SPI.h>
 
-struct Logger {
-  void begin(int baudRate) {
-    Serial.begin(baudRate);
-    while (!Serial) {
-    }
-  }
+#define MILLISECOND 1
+#define SECOND 1000 * MILLISECOND
+#define MINUTE 60 * SECOND
 
-  void debug(uint32_t timestamp, const char *context) {
-    char buffer[100];
-    sprintf(buffer, "[DEBUG] [timestamp:%lu] [context:%s]", timestamp, context);
-    Serial.println(buffer);
-  }
+#define DEBUG 1
 
-  void info(uint32_t timestamp, float temperature, const char *context) {
-    char buffer[100];
-    char fmt[100] = "[INFO] [timestamp:%lu] [temperature:%s°F] [context:%s]";
-
-    char tempBuffer[16];
-    dtostrf(temperature, 0, 2, tempBuffer);
-
-    sprintf(buffer, fmt, timestamp, tempBuffer, context);
-    Serial.println(buffer);
-  }
-
-  void error(uint32_t timestamp, const char *context) {
-    char buffer[100];
-    sprintf(buffer, "[ERROR] [timestamp:%lu] [context:%s]", timestamp, context);
-    Serial.println(buffer);
-  }
-};
-
-Logger logger;
+const int CHIP_SELECT_PIN = 10;
 
 RTC_PCF8523 rtc;
 
-void error(Logger logger, uint32_t timestamp, char *context) {
-  logger.error(timestamp, context);
+char DAYS_OF_THE_WEEK[7][12] = {"Sunday",   "Monday", "Tuesday", "Wednesday",
+                                "Thursday", "Friday", "Saturday"};
+
+void error(char *err) {
+  Serial.print("error: ");
+  Serial.println(err);
   Serial.flush();
   while (1)
     delay(10);
 }
 
-void setupRTC(Logger logger) {
+String formatUnixTimestamp(DateTime dt) {
+  //
+  return String(dt.unixtime());
+}
+
+String formatHumanReadableTimestamp(DateTime dt) {
+  char buffer[150];
+  char fmt[50] = "%d/%02d/%02d %s %02d:%02d:%02d";
+
+  char *dayOfTheWeek = DAYS_OF_THE_WEEK[dt.dayOfTheWeek()];
+
+  sprintf(buffer, fmt, dt.year(), dt.month(), dt.day(), dayOfTheWeek, dt.hour(),
+          dt.minute(), dt.second());
+
+  return String(buffer);
+}
+
+String formatTemperature(float temperature) {
+  char buffer[10];
+  dtostrf(temperature, 0, 3, buffer);
+
+  return String(buffer);
+}
+
+void setup() {
+  Serial.begin(9600);
+
+  Serial.println("Initializing SD");
+
+  if (!SD.begin(CHIP_SELECT_PIN)) {
+    error("Initialization for SD failed");
+  }
+  Serial.println("Initialization for SD done");
+
   if (!rtc.begin()) {
-    error(logger, 0, "RTC failed");
+    error("Initialization for RTC failed");
   }
 
   if (!rtc.initialized() || rtc.lostPower()) {
-    logger.debug(0, "RTC is not initialized... setting time");
+    Serial.println("RTC is not initialized... setting time");
     rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
   }
 
   rtc.start();
-
-  float drift = 43;
-  float period_sec = (7 * 86400);
-  float deviation_ppm = (drift / period_sec * 1000000);
-  float drift_unit = 4.34;
-
-  int offset = round(deviation_ppm / drift_unit);
-
-  logger.debug(rtc.now().unixtime(), "RTC offset is: " + offset);
-}
-
-void setup() {
-  logger.begin(9600);
-
-  delay(5000);
-
-  setupRTC(logger);
-
-  logger.debug(rtc.now().unixtime(), "initialized rtc");
 }
 
 void loop() {
+  File myFile = SD.open("LOGS.CSV", FILE_WRITE);
 
-  uint32_t timestamp = rtc.now().unixtime();
-  float temp = 68.4;
+  if (myFile) {
+    float temperature = 12.3;
 
-  logger.info(timestamp, temp, "measured temperature");
+    DateTime now = rtc.now();
 
-  delay(5000);
+    String unixTime = formatUnixTimestamp(now);
+    String humanTime = formatHumanReadableTimestamp(now);
+    String tempString = formatTemperature(temperature);
+
+    String rowInCSV =
+        "'" + unixTime + "','" + humanTime + "','" + tempString + "F'";
+
+    myFile.println(rowInCSV);
+    myFile.close();
+
+    Serial.println(rowInCSV);
+  } else {
+    Serial.println("error opening file: LOGS.CSV");
+  }
+
+  delay(1 * SECOND);
 }
