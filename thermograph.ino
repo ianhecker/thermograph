@@ -96,7 +96,7 @@ void loop() {
         "'" + unixTime + "','" + humanTime + "','" + tempString + "F'";
 
     myFile.println(rowInCSV);
-    mtFile.flush();
+    myFile.flush();
     myFile.close();
 
     Serial.println(rowInCSV);
