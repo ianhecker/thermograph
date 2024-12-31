@@ -86,6 +86,8 @@ void setup() {
 void loop() {
   File myFile = SD.open("LOGS.CSV", FILE_WRITE);
 
+  // Add LED for attempting to write
+
   if (myFile) {
     float temperature = getTemperature();
 
@@ -102,8 +104,12 @@ void loop() {
     myFile.flush();
     myFile.close();
 
+    // Add LED for completed write
+
     Serial.println(rowInCSV);
   } else {
+
+    // Add LED for error
     Serial.println("error opening file: LOGS.CSV");
   }
 
