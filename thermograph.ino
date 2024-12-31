@@ -78,6 +78,9 @@ void setup() {
   }
 
   rtc.start();
+
+  // Dummy reading to warm up
+  getTemperature();
 }
 
 void loop() {
